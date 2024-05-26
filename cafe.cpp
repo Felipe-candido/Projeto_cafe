@@ -1,5 +1,8 @@
 #include <iostream>
+#include <limits>
 using namespace std;
+
+int menu();
 
 struct MEMBRO{
     int id;
@@ -7,27 +10,36 @@ struct MEMBRO{
     int semestre;
     int ano_ingresso;
     string curso;
-    int contadorgerhrhnrnrnfhfndgbgbed
+    int contador;
 };
 
     int main(){
     
+    int opcao;
     do{
+        opcao = 0;
         int menu();
-        int opcao = menu();
+        opcao = menu();
         switch (opcao)
         {
         case 1:
-            
+            cout << "TESTE";
+            break;
+        
+        case 5:
+            cout << "Fechando...";
             break;
         
         default:
+        cout << "Por favor insira um numero valido" << endl;
             break;
         }
-    }while(menu() != 5);
+    }while(opcao != 5);
+    
     return 0;
 }
 
+// FUNÇÃO QUE CRIA UM MENU INICIAL E RETORNA UMA DAS OPÇÕES DO PROGRAMA
 int menu()
 {
     int opcao;
@@ -38,7 +50,14 @@ int menu()
     cout << "2 - Exibir membros\n";
     cout << "3 - Registrar pagamentos\n";
     cout << "4 - Cadastro de membros\n";
-    cin >> opcao;
+    
+    // (cin >> opção) TENTA LER A ENTRADA E ARMAZENA NA VARIÁVEL OPCAO
+    while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
+    {
+        cout << "Entrada invalida, por favor insira um numero" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
     return opcao;
 }
 
