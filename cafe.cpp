@@ -2,6 +2,7 @@
 #include <limits>
 using namespace std;
 
+// ESTRUTURAS DO SISTEMA
 typedef struct MEMBRO{
     int id;
     string nome;
@@ -21,29 +22,30 @@ typedef struct lista{
     REGISTRO *final;
 }LISTA;
 
+// PROTÓTIPO DAS FUNÇOES   
+int menu();
+CADASTRO cadastrar_membro();
+REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
     
-    int menu();
-    CADASTRO cadastrar_membro();
-    REGISTRO registrar(LISTA *lista, CADASTRO *membro);
-    
-    int main(){
+int main(){
     
     // INICIA A LISTA
-    LISTA *lista_registros = {nullptr};
+    LISTA lista_registros;
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
-    int opcao;
+    int opcao = 0;
     do{
-        opcao = 0;
-        int menu();
+        opcao = menu();
+        
         switch (opcao)
         {
-        case 1:
+        case 1:{
             // CRIANDO NOVO CADASTRO
             CADASTRO novo_cadastro = cadastrar_membro();
-            registrar(lista_registros, &novo_cadastro);
+            registrar(&lista_registros, &novo_cadastro);
+            cout << "Cadastro realizado com sucesso!" << endl;
             break;
-        
+        }
         case 5:
             cout << "Fechando...";
             break;
@@ -108,7 +110,7 @@ CADASTRO cadastrar_membro()
     return novo_membro;
 }
 
-REGISTRO registrar(LISTA *lista, CADASTRO *membro)
+REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 {
     REGISTRO *novo_registro = new REGISTRO;
     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
@@ -120,18 +122,17 @@ REGISTRO registrar(LISTA *lista, CADASTRO *membro)
     // CRIAÇÃO DO REGISTRO
     novo_registro->membro = *membro;
     novo_registro->next = NULL;
-    novo_registro->prev = NULL;
+    novo_registro->prev = lista->final;
 
-    if (lista->inicio == NULL){
-        lista->inicio = novo_registro;
-        lista->final = novo_registro;
-        return *novo_registro;
-    }
-
-    else{
+    // VERIFICA SE A LISTA ESTÁ VAZIA OU NÃO
+    if (lista->final != NULL){
         lista->final->next = novo_registro;
-        novo_registro->prev = lista->final;
-        lista->final = novo_registro;
-        return *novo_registro;
     }
+    else{
+        lista->inicio = novo_registro;
+    }
+    lista->final = novo_registro;
+
+
+    return novo_registro;
 }
