@@ -24,24 +24,24 @@ typedef struct lista{
     
     int menu();
     CADASTRO cadastrar_membro();
-    REGISTRO registrar(CADASTRO *membro);
+    REGISTRO registrar(LISTA *lista, CADASTRO *membro);
     
     int main(){
     
     // INICIA A LISTA
-    //LISTA *lista_registros;
+    LISTA *lista_registros = {nullptr};
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
     int opcao;
     do{
         opcao = 0;
         int menu();
-        opcao = menu();
         switch (opcao)
         {
         case 1:
             // CRIANDO NOVO CADASTRO
-            cadastrar_membro();
+            CADASTRO novo_cadastro = cadastrar_membro();
+            registrar(lista_registros, &novo_cadastro);
             break;
         
         case 5:
@@ -85,49 +85,53 @@ int menu()
 CADASTRO cadastrar_membro()
 {
     // CRIA UM NOVO CADASTRO;
-    CADASTRO *novo_membro = new CADASTRO;
+    CADASTRO novo_membro;
     cout << endl;
     cout << "CADASTRO DE MEMBROS\n";
     cout << "================================\n";
     cout << "Primeiro nome: ";
-    cin >> novo_membro->nome;
+    cin >> novo_membro.nome;
     
     
     cout << "Semestre: ";
-    cin >> novo_membro->semestre;
+    cin >> novo_membro.semestre;
     
 
     cout << "Ano de ingresso: ";
-    cin >> novo_membro->ano_ingresso;
+    cin >> novo_membro.ano_ingresso;
     
 
     cout << "Curso(SI, DSM ou GE): ";
-    cin >> novo_membro->curso;
+    cin >> novo_membro.curso;
     cout << endl;
 
-    return *novo_membro;
+    return novo_membro;
 }
 
-// REGISTRO registrar(LISTA *lista_registros, CADASTRO *membro)
-// {
-//     REGISTRO *novo_registro = new REGISTRO;
-//     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
-//     if (novo_registro == NULL){
-//         cerr << "Acabou a memória." << endl;
-//         exit(1);
-//     }
+REGISTRO registrar(LISTA *lista, CADASTRO *membro)
+{
+    REGISTRO *novo_registro = new REGISTRO;
+    // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
+    if (novo_registro == NULL){
+        cerr << "Acabou a memória." << endl;
+        exit(1);
+    }
 
-//     // CRIAÇÃO DO REGISTRO
-//     novo_registro->membro = *membro;
-//     novo_registro->next = NULL;
-//     novo_registro->prev = NULL;
+    // CRIAÇÃO DO REGISTRO
+    novo_registro->membro = *membro;
+    novo_registro->next = NULL;
+    novo_registro->prev = NULL;
 
-//     if (lista_registros->inicio == NULL){
-//         lista_registros->inicio = novo_registro;
-//         lista_registros->final = novo_registro;
-//         return *novo_registro;
-//     }
-//     if (lista_registros->final->membro.id == 1){
+    if (lista->inicio == NULL){
+        lista->inicio = novo_registro;
+        lista->final = novo_registro;
+        return *novo_registro;
+    }
 
-//     }
-// }
+    else{
+        lista->final->next = novo_registro;
+        novo_registro->prev = lista->final;
+        lista->final = novo_registro;
+        return *novo_registro;
+    }
+}
