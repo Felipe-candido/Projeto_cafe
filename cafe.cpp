@@ -26,11 +26,12 @@ typedef struct lista{
 int menu();
 CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
+void exibir_membros(LISTA* lista);
     
 int main(){
     
     // INICIA A LISTA
-    LISTA lista_registros;
+    LISTA lista_registros = { nullptr, nullptr };
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
     int opcao = 0;
@@ -46,6 +47,12 @@ int main(){
             cout << "Cadastro realizado com sucesso!" << endl;
             break;
         }
+
+       case 2:
+           // EXIBINDO MEMBROS CADASTRADOS
+           exibir_membros(&lista_registros);
+           break;
+
         case 5:
             cout << "Fechando...";
             break;
@@ -83,7 +90,7 @@ int menu()
     return opcao;
 }
 
-// FUNÇÃO PARA REGISTRO DE MEMBROS
+// FUNÇÃO PARA CRIA UM CADASTRO DE MEMBROS
 CADASTRO cadastrar_membro()
 {
     // CRIA UM NOVO CADASTRO;
@@ -110,8 +117,15 @@ CADASTRO cadastrar_membro()
     return novo_membro;
 }
 
+
+// REGISTRA UM MEMBRO NA LISTA DO SISTEMA
 REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 {
+    if (lista == nullptr) {
+        cerr << "Erro: A lista não foi inicializada corretamente." << endl;
+        return nullptr;
+    }
+
     REGISTRO *novo_registro = new REGISTRO;
     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
     if (novo_registro == NULL){
@@ -123,16 +137,58 @@ REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
     novo_registro->membro = *membro;
     novo_registro->next = NULL;
     novo_registro->prev = lista->final;
+     
 
     // VERIFICA SE A LISTA ESTÁ VAZIA OU NÃO
     if (lista->final != NULL){
+        novo_registro->membro.id = lista->final->membro.id + 1;
         lista->final->next = novo_registro;
+
     }
     else{
         lista->inicio = novo_registro;
+        novo_registro->membro.id = 1;
     }
     lista->final = novo_registro;
 
 
     return novo_registro;
 }
+
+
+// FUNÇÃO PARA EXIBIR OS MEMBROS
+void exibir_membros(LISTA* lista)
+{
+    if (lista == nullptr) {
+        cout << "Erro: A lista não foi inicializada corretamente." << endl;
+        return;
+    }
+
+    REGISTRO* aux;
+    aux = lista->inicio;
+    if(lista->inicio != NULL){
+        cout << "============================\n";
+        cout << "Lista de membros\n";
+        cout << "============================\n";
+       
+        // EXIBE OS MEMBROS ATÉ CHEGAR NO ULTIMO REGISTRO
+        while(aux != NULL)
+        {
+            cout << "-----------------------\n";
+            cout << "ID: " << aux->membro.id << endl;
+            cout << "NOME: " << aux->membro.nome << endl; 
+            cout << "SEMESTRE: " << aux->membro.semestre << endl;
+            cout << "ANO DE INGRESSO: " << aux->membro.ano_ingresso << endl;
+            cout << "curso: " << aux->membro.curso << endl;
+            cout << "-----------------------\n" << endl;
+            cout << endl;
+            aux = aux->next;
+            
+        }
+    }
+    else{
+        cout << "Lista de membros vazia..." << endl;
+    }
+    return;
+}
+
