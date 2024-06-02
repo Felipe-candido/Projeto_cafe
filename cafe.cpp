@@ -1,5 +1,7 @@
 #include <iostream>
 #include <limits>
+#include <cstring>
+
 using namespace std;
 
 // ESTRUTURAS DO SISTEMA
@@ -27,6 +29,7 @@ int menu();
 CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
+void editar_membros(LISTA *lista, int id);
     
 int main(){
     
@@ -48,10 +51,18 @@ int main(){
             break;
         }
 
-       case 2:
-           // EXIBINDO MEMBROS CADASTRADOS
-           exibir_membros(&lista_registros);
-           break;
+        case 2:
+            // EXIBINDO MEMBROS CADASTRADOS
+            exibir_membros(&lista_registros);
+            break;
+
+        case 3:
+            // EDITA AS INFORMAÇÕES DO MEMBRO DESEJADO
+            int id;
+            cout << "Insira o ID do membro que deseja fazer alterações: ";
+            cin >> id;
+            editar_membros(&lista_registros, id);
+            break;
 
         case 5:
             cout << "Fechando...";
@@ -75,7 +86,7 @@ int menu()
     cout << "======================================\n";
     cout << "1 - Cadastrar Membro\n";
     cout << "2 - Exibir membros\n";
-    cout << "3 - Registrar pagamentos\n";
+    cout << "3 - Editar membros\n";
     cout << "4 - Cadastro de membros\n";
     cout << "5 - Sair\n";
     
@@ -99,7 +110,8 @@ CADASTRO cadastrar_membro()
     cout << "CADASTRO DE MEMBROS\n";
     cout << "================================\n";
     cout << "Primeiro nome: ";
-    cin >> novo_membro.nome;
+    cin.ignore();
+    getline(cin, novo_membro.nome);
     
     
     cout << "Semestre: ";
@@ -111,7 +123,8 @@ CADASTRO cadastrar_membro()
     
 
     cout << "Curso(SI, DSM ou GE): ";
-    cin >> novo_membro.curso;
+    cin.ignore();
+    getline(cin, novo_membro.curso);
     cout << endl;
 
     return novo_membro;
@@ -128,19 +141,19 @@ REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 
     REGISTRO *novo_registro = new REGISTRO;
     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
-    if (novo_registro == NULL){
+    if (novo_registro == nullptr){
         cerr << "Acabou a memória." << endl;
         exit(1);
     }
 
     // CRIAÇÃO DO REGISTRO
     novo_registro->membro = *membro;
-    novo_registro->next = NULL;
+    novo_registro->next = nullptr;
     novo_registro->prev = lista->final;
      
 
     // VERIFICA SE A LISTA ESTÁ VAZIA OU NÃO
-    if (lista->final != NULL){
+    if (lista->final != nullptr){
         novo_registro->membro.id = lista->final->membro.id + 1;
         lista->final->next = novo_registro;
 
@@ -160,26 +173,26 @@ REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 void exibir_membros(LISTA* lista)
 {
     if (lista == nullptr) {
-        cout << "Erro: A lista não foi inicializada corretamente." << endl;
+        cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
         return;
     }
 
     REGISTRO* aux;
     aux = lista->inicio;
-    if(lista->inicio != NULL){
+    if(lista->inicio != nullptr){
         cout << "============================\n";
         cout << "Lista de membros\n";
         cout << "============================\n";
        
         // EXIBE OS MEMBROS ATÉ CHEGAR NO ULTIMO REGISTRO
-        while(aux != NULL)
+        while(aux != nullptr)
         {
             cout << "-----------------------\n";
             cout << "ID: " << aux->membro.id << endl;
             cout << "NOME: " << aux->membro.nome << endl; 
             cout << "SEMESTRE: " << aux->membro.semestre << endl;
             cout << "ANO DE INGRESSO: " << aux->membro.ano_ingresso << endl;
-            cout << "curso: " << aux->membro.curso << endl;
+            cout << "CURSO: " << aux->membro.curso << endl;
             cout << "-----------------------\n" << endl;
             cout << endl;
             aux = aux->next;
@@ -190,5 +203,51 @@ void exibir_membros(LISTA* lista)
         cout << "Lista de membros vazia..." << endl;
     }
     return;
+}
+
+
+// FUNÇÃO PARA EDITAR AS INFORMAÇÕES DO MEMBRO
+void editar_membros(LISTA *lista, int id)
+{
+    if (lista == nullptr) {
+        cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
+        return;
+    }
+
+    REGISTRO* aux;
+    aux = lista->inicio;
+    
+    while(aux != nullptr)
+    {
+        if(aux->membro.id == id){
+            // MOSTRA O MEMBRO QUE SERÁ EDITADO
+            cout << "EDITAR MEMBRO:\n";
+            cout << "-----------------------\n";
+            cout << "ID: " << aux->membro.id << endl;
+            cout << "NOME: " << aux->membro.nome << endl; 
+            cout << "SEMESTRE: " << aux->membro.semestre << endl;
+            cout << "ANO DE INGRESSO: " << aux->membro.ano_ingresso << endl;
+            cout << "CURSO: " << aux->membro.curso << endl;
+            cout << "-----------------------\n" << endl;
+            cout << endl;
+            
+            // ABRE A EDIÇÃO DO MEMBRO
+            cout << "-----------------------\n";
+            cout << "Editar nome: ";
+            cin.ignore();
+            getline(cin, aux->membro.nome); 
+            cout << "Editar semestre: ";
+            cin >> aux->membro.semestre;
+            cout << "Editar ano de ingresso: ";
+            cin >> aux->membro.ano_ingresso;
+            cout << "Editar curso: ";
+            cin.ignore();
+            getline(cin, aux->membro.curso);
+            cout << "-----------------------\n" << endl;
+            return;
+        }
+        aux = aux->next;
+    }
+    cout << "Não foi encontrado um membro com esse id." << endl;
 }
 
