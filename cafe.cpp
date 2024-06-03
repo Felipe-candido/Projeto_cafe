@@ -69,7 +69,12 @@ int main(){
             editar_membros(&lista_registros, id);
             break;
 
-        case 5:
+        case 4:
+            // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
+            ler_txt();
+            break;
+
+        case 6:
             cout << "Fechando...";
             break;
         
@@ -77,7 +82,7 @@ int main(){
         cout << "Por favor insira um numero valido" << endl;
             break;
         }
-    }while(opcao != 5);
+    }while(opcao != 6);
     
     return 0;
 }
