@@ -1,6 +1,10 @@
 #include <iostream>
+// BIBLIOTECA 
 #include <limits>
+// BIBLIOTECA PARA MANIPULAÇÃO DE STRINGS
 #include <cstring>
+// BIBLIOTECA PARA MANUPULAÇÃO DE ARQUIVOS EXTERNOS
+#include <fstream>
 
 using namespace std;
 
@@ -30,6 +34,7 @@ CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
+void ler_txt();
     
 int main(){
     
@@ -87,8 +92,9 @@ int menu()
     cout << "1 - Cadastrar Membro\n";
     cout << "2 - Exibir membros\n";
     cout << "3 - Editar membros\n";
-    cout << "4 - Cadastro de membros\n";
-    cout << "5 - Sair\n";
+    cout << "4 - Ler arquivo externo\n";
+    cout << "5 - Gravar em arquivo externo\n";
+    cout << "6 - Sair\n";
     
     // (cin >> opção) TENTA LER A ENTRADA E ARMAZENA NA VARIÁVEL OPCAO
     while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
@@ -249,5 +255,25 @@ void editar_membros(LISTA *lista, int id)
         aux = aux->next;
     }
     cout << "Não foi encontrado um membro com esse id." << endl;
+}
+
+
+// FUNÇÃO PARA LER ARQUIVO DE TEXTO E ALIMENTAR A ESTRUTURA DO SISTEMA
+void ler_txt()
+{
+    ifstream arquivo("participantes.txt");
+    if(!arquivo){
+        cerr << "Erro ao abrir arquivo externo." << endl;
+        return;
+    }
+
+    string line;
+    cout << "Conteúdo do arquivo (participantes.txt)." << endl;
+    cout << "=================================\n";
+    while(getline(arquivo, line)){
+        cout << line << endl;
+    }
+    arquivo.close();
+    return;
 }
 
