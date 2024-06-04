@@ -34,12 +34,12 @@ CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
-void ler_txt();
+void ler_txt(const string& nome_arquivo);
     
 int main(){
     
     // INICIA A LISTA
-    LISTA lista_registros = { nullptr, nullptr };
+    LISTA lista_registros = { NULL, NULL };
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
     int opcao = 0;
@@ -69,10 +69,12 @@ int main(){
             editar_membros(&lista_registros, id);
             break;
 
-        case 4:
+        case 4:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
-            ler_txt();
+            string nome_arquivo = "participantes.txt";
+            ler_txt(nome_arquivo);
             break;
+        }
 
         case 6:
             cout << "Fechando...";
@@ -145,26 +147,26 @@ CADASTRO cadastrar_membro()
 // REGISTRA UM MEMBRO NA LISTA DO SISTEMA
 REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 {
-    if (lista == nullptr) {
+    if (lista == NULL) {
         cerr << "Erro: A lista não foi inicializada corretamente." << endl;
-        return nullptr;
+        return NULL;
     }
 
     REGISTRO *novo_registro = new REGISTRO;
     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
-    if (novo_registro == nullptr){
+    if (novo_registro == NULL){
         cerr << "Acabou a memória." << endl;
         exit(1);
     }
 
     // CRIAÇÃO DO REGISTRO
     novo_registro->membro = *membro;
-    novo_registro->next = nullptr;
+    novo_registro->next = NULL;
     novo_registro->prev = lista->final;
      
 
     // VERIFICA SE A LISTA ESTÁ VAZIA OU NÃO
-    if (lista->final != nullptr){
+    if (lista->final != NULL){
         novo_registro->membro.id = lista->final->membro.id + 1;
         lista->final->next = novo_registro;
 
@@ -183,20 +185,20 @@ REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
 // FUNÇÃO PARA EXIBIR OS MEMBROS
 void exibir_membros(LISTA* lista)
 {
-    if (lista == nullptr) {
+    if (lista == NULL) {
         cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
         return;
     }
 
     REGISTRO* aux;
     aux = lista->inicio;
-    if(lista->inicio != nullptr){
+    if(lista->inicio != NULL){
         cout << "============================\n";
         cout << "Lista de membros\n";
         cout << "============================\n";
        
         // EXIBE OS MEMBROS ATÉ CHEGAR NO ULTIMO REGISTRO
-        while(aux != nullptr)
+        while(aux != NULL)
         {
             cout << "-----------------------\n";
             cout << "ID: " << aux->membro.id << endl;
@@ -220,7 +222,7 @@ void exibir_membros(LISTA* lista)
 // FUNÇÃO PARA EDITAR AS INFORMAÇÕES DO MEMBRO
 void editar_membros(LISTA *lista, int id)
 {
-    if (lista == nullptr) {
+    if (lista == NULL) {
         cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
         return;
     }
@@ -228,7 +230,7 @@ void editar_membros(LISTA *lista, int id)
     REGISTRO* aux;
     aux = lista->inicio;
     
-    while(aux != nullptr)
+    while(aux != NULL)
     {
         if(aux->membro.id == id){
             // MOSTRA O MEMBRO QUE SERÁ EDITADO
@@ -264,9 +266,9 @@ void editar_membros(LISTA *lista, int id)
 
 
 // FUNÇÃO PARA LER ARQUIVO DE TEXTO E ALIMENTAR A ESTRUTURA DO SISTEMA
-void ler_txt()
+void ler_txt(const string& nome_arquivo)
 {
-    ifstream arquivo("participantes.txt");
+    ifstream arquivo(nome_arquivo);
     if(!arquivo){
         cerr << "Erro ao abrir arquivo externo." << endl;
         return;
@@ -279,6 +281,5 @@ void ler_txt()
         cout << line << endl;
     }
     arquivo.close();
-    return;
 }
 
