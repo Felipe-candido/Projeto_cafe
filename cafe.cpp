@@ -71,7 +71,7 @@ int main(){
 
         case 4:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
-            string nome_arquivo = "participantes.txt";
+            string nome_arquivo = "projeto_cafe/participantes.txt";
             ler_txt(nome_arquivo);
             break;
         }
@@ -207,7 +207,6 @@ void exibir_membros(LISTA* lista)
             cout << "ANO DE INGRESSO: " << aux->membro.ano_ingresso << endl;
             cout << "CURSO: " << aux->membro.curso << endl;
             cout << "-----------------------\n" << endl;
-            cout << endl;
             aux = aux->next;
             
         }
