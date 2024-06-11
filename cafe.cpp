@@ -282,6 +282,7 @@ CADASTRO ler_txt(const string& nome_arquivo)
     cout << "Conteúdo do arquivo de participantes." << endl;
     cout << "=================================\n";
     while(getline(arquivo, line)){
+        novo_cadastro.id = line;
         cout << line << endl;
     }
     arquivo.close();
