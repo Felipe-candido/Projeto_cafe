@@ -6,6 +6,8 @@
 // BIBLIOTECA PARA MANUPULAÇÃO DE ARQUIVOS EXTERNOS
 #include <fstream>
 
+#include <locale.h>
+
 using namespace std;
 
 // ESTRUTURAS DO SISTEMA
@@ -34,9 +36,10 @@ CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
-void ler_txt(const string& nome_arquivo);
+CADASTRO ler_txt(const string& nome_arquivo);
     
 int main(){
+    setlocale(LC_ALL, "Portuguese");
     
     // INICIA A LISTA
     LISTA lista_registros = { NULL, NULL };
@@ -71,7 +74,7 @@ int main(){
 
         case 4:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
-            string nome_arquivo = "projeto_cafe/participantes.txt";
+            string nome_arquivo = "participantes.txt";
             ler_txt(nome_arquivo);
             break;
         }
@@ -81,7 +84,7 @@ int main(){
             break;
         
         default:
-        cout << "Por favor insira um numero valido" << endl;
+        cout << "Por favor insira um numero válido" << endl;
             break;
         }
     }while(opcao != 6);
@@ -107,7 +110,7 @@ int menu()
     while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
     {
         // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
-        cout << "Entrada invalida, por favor insira um numero" << endl;
+        cout << "Entrada inválida, por favor insira um nú6mero" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
@@ -265,20 +268,23 @@ void editar_membros(LISTA *lista, int id)
 
 
 // FUNÇÃO PARA LER ARQUIVO DE TEXTO E ALIMENTAR A ESTRUTURA DO SISTEMA
-void ler_txt(const string& nome_arquivo)
+CADASTRO ler_txt(const string& nome_arquivo)
 {
     ifstream arquivo(nome_arquivo);
     if(!arquivo){
         cerr << "Erro ao abrir arquivo externo." << endl;
-        return;
+        CADASTRO falha;
+        return falha;
     }
 
+    CADASTRO novo_cadastro;
     string line;
-    cout << "Conteúdo do arquivo (participantes.txt)." << endl;
+    cout << "Conteúdo do arquivo de participantes." << endl;
     cout << "=================================\n";
     while(getline(arquivo, line)){
         cout << line << endl;
     }
     arquivo.close();
+    return novo_cadastro;
 }
 
