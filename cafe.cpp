@@ -1,12 +1,13 @@
 #include <iostream>
-// BIBLIOTECA 
+// BIBLIOTECA PARA LIMITAR CARACTERES
 #include <limits>
 // BIBLIOTECA PARA MANIPULAÇÃO DE STRINGS
 #include <cstring>
 // BIBLIOTECA PARA MANUPULAÇÃO DE ARQUIVOS EXTERNOS
 #include <fstream>
-
-#include <locale.h>
+// BIBLIOTECA PARA MANIPULAR FLUXOS DE ENTRADA E SAÍDA DE STRINGS
+#include <sstream>
+#include <locale>
 
 using namespace std;
 
@@ -33,10 +34,10 @@ typedef struct lista{
 // PROTÓTIPO DAS FUNÇOES   
 int menu();
 CADASTRO cadastrar_membro();
-REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
+void registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
-// CADASTRO ler_txt(const string& nome_arquivo);
+void ler_txt(const string& nome_arquivo, LISTA* lista);
 void salvar_cadastros(LISTA* lista);
     
 int main(){
@@ -76,13 +77,14 @@ int main(){
         case 4:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
             string nome_arquivo = "participantes.txt";
-            //ler_txt(nome_arquivo);
+            ler_txt(nome_arquivo, &lista_registros);
             break;
         }
 
         case 5:
             // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
+            cout << "Cadastros salvos com sucesso no documento participantes.txt" << endl;
             break;
 
         case 6:
@@ -154,11 +156,11 @@ CADASTRO cadastrar_membro()
 
 
 // REGISTRA UM MEMBRO NA LISTA DO SISTEMA
-REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
+void registrar(LISTA* lista, CADASTRO* membro)
 {
     if (lista == NULL) {
         cerr << "Erro: A lista não foi inicializada corretamente." << endl;
-        return NULL;
+        return;
     }
 
     REGISTRO *novo_registro = new REGISTRO;
@@ -187,7 +189,7 @@ REGISTRO* registrar(LISTA* lista, CADASTRO* membro)
     lista->final = novo_registro;
 
 
-    return novo_registro;
+    return;
 }
 
 
@@ -275,7 +277,7 @@ void editar_membros(LISTA *lista, int id)
 // FUNÇÃO PARA SALVAR OS REGISTROS EM UM ARQUIVO TXT
 void salvar_cadastros(LISTA* lista)
 {
-    // cria e abre arquivo para leitura
+    // CRIA E ABRE ARQUIVO PARA LEITURA
     ofstream arquivo("participantes.txt");
     if(!arquivo){
         cerr << "Erro ao abrir o arquivo de participantes.";
@@ -288,10 +290,11 @@ void salvar_cadastros(LISTA* lista)
         return;
     }
     
-    // verifica se o arquivo funcionou
+    // VERIFICA SE O ARQUIVO ABRIU CORRETAMENTE
     if(arquivo.is_open()){
         REGISTRO *aux = lista->inicio;
 
+        // PERCORRE A LISTA SALVANDO OS REGISTROS
         while (aux != NULL)
         {
             arquivo << aux->membro.id; arquivo << " ";
@@ -308,24 +311,36 @@ void salvar_cadastros(LISTA* lista)
 
 
 // FUNÇÃO PARA LER ARQUIVO DE TEXTO E ALIMENTAR A ESTRUTURA DO SISTEMA
-// CADASTRO ler_txt(const string& nome_arquivo)
-// {
-//     ifstream arquivo(nome_arquivo);
-//     if(!arquivo){
-//         cerr << "Erro ao abrir arquivo externo." << endl;
-//         CADASTRO falha;
-//         return falha;
-//     }
+void ler_txt(const string& nome_arquivo, LISTA* lista)
+{
+    ifstream arquivo(nome_arquivo);
+    if(!arquivo){
+        cerr << "Erro ao abrir arquivo externo." << endl;
+        return;
+    }
 
-//     CADASTRO novo_cadastro;
-//     string line;
-//     cout << "Conteúdo do arquivo de participantes." << endl;
-//     cout << "=================================\n";
-//     while(getline(arquivo, line)){
-//         novo_cadastro.id = line;
-//         cout << line << endl;
-//     }
-//     arquivo.close();
-//     return novo_cadastro;
-// }
+    
+    string line;
+    cout << "Conteúdo do arquivo de participantes que serão iseridos na lista." << endl;
+    cout << "=================================\n";
+    while(getline(arquivo, line)){
+        cout << line << endl;
+
+        CADASTRO novo_cadastro;
+        // CRIA UM OBJETO QUE VAI RECEBER UMA LINHA DO ARQUIVO TXT PARA MANIPULAR
+        istringstream linha(line);
+
+        // CONVERTE CADA PARTE DA LINHA DENTRO DA ESTRUTURA DE CADASTRO
+        linha >> novo_cadastro.id;
+        linha >> novo_cadastro.nome;
+        linha >> novo_cadastro.curso;
+        linha >> novo_cadastro.semestre;
+        linha >> novo_cadastro.ano_ingresso;
+
+        // INSERE O CADASTRO CRIADO DENTRO DA LISTA
+        registrar(lista, &novo_cadastro);
+    }
+    arquivo.close();
+    return;
+}
 
