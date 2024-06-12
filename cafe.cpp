@@ -36,7 +36,8 @@ CADASTRO cadastrar_membro();
 REGISTRO* registrar(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
-CADASTRO ler_txt(const string& nome_arquivo);
+// CADASTRO ler_txt(const string& nome_arquivo);
+void salvar_cadastros(LISTA* lista);
     
 int main(){
     setlocale(LC_ALL, "Portuguese");
@@ -75,9 +76,14 @@ int main(){
         case 4:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
             string nome_arquivo = "participantes.txt";
-            ler_txt(nome_arquivo);
+            //ler_txt(nome_arquivo);
             break;
         }
+
+        case 5:
+            // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
+            salvar_cadastros(&lista_registros);
+            break;
 
         case 6:
             cout << "Fechando...";
@@ -266,26 +272,63 @@ void editar_membros(LISTA *lista, int id)
     cout << "Não foi encontrado um membro com esse id." << endl;
 }
 
+// FUNÇÃO PARA SALVAR OS REGISTROS EM UM ARQUIVO TXT
+void salvar_cadastros(LISTA* lista)
+{
+    // cria e abre arquivo para leitura
+    ofstream arquivo("participantes.txt");
+    if(!arquivo){
+        cerr << "Erro ao abrir o arquivo de participantes.";
+        return;
+    }
+
+    // VERIFICA SE A LISTA DO SISTEMA ESTÁ VAZIA
+    if (lista == NULL) {
+        cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
+        return;
+    }
+    
+    // verifica se o arquivo funcionou
+    if(arquivo.is_open()){
+        REGISTRO *aux = lista->inicio;
+
+        while (lista->inicio != NULL)
+        {
+            while(!arquivo.eof())
+            {
+                arquivo << aux->membro.id; arquivo << " ";
+                arquivo << aux->membro.nome; arquivo << " ";
+                arquivo << aux->membro.curso; arquivo << " ";
+                arquivo << aux->membro.semestre; arquivo << " ";
+                arquivo << aux->membro.ano_ingresso; arquivo << " ";
+                arquivo << endl;
+                aux = lista->inicio->next;
+            }   
+        }
+        return;
+    }
+}
+
 
 // FUNÇÃO PARA LER ARQUIVO DE TEXTO E ALIMENTAR A ESTRUTURA DO SISTEMA
-CADASTRO ler_txt(const string& nome_arquivo)
-{
-    ifstream arquivo(nome_arquivo);
-    if(!arquivo){
-        cerr << "Erro ao abrir arquivo externo." << endl;
-        CADASTRO falha;
-        return falha;
-    }
+// CADASTRO ler_txt(const string& nome_arquivo)
+// {
+//     ifstream arquivo(nome_arquivo);
+//     if(!arquivo){
+//         cerr << "Erro ao abrir arquivo externo." << endl;
+//         CADASTRO falha;
+//         return falha;
+//     }
 
-    CADASTRO novo_cadastro;
-    string line;
-    cout << "Conteúdo do arquivo de participantes." << endl;
-    cout << "=================================\n";
-    while(getline(arquivo, line)){
-        novo_cadastro.id = line;
-        cout << line << endl;
-    }
-    arquivo.close();
-    return novo_cadastro;
-}
+//     CADASTRO novo_cadastro;
+//     string line;
+//     cout << "Conteúdo do arquivo de participantes." << endl;
+//     cout << "=================================\n";
+//     while(getline(arquivo, line)){
+//         novo_cadastro.id = line;
+//         cout << line << endl;
+//     }
+//     arquivo.close();
+//     return novo_cadastro;
+// }
 
