@@ -215,7 +215,7 @@ void exibir_membros(LISTA* lista)
             cout << "SEMESTRE: " << aux->membro.semestre << endl;
             cout << "ANO DE INGRESSO: " << aux->membro.ano_ingresso << endl;
             cout << "CURSO: " << aux->membro.curso << endl;
-            cout << "-----------------------\n" << endl;
+            cout << "-----------------------\n";
             aux = aux->next;
             
         }
@@ -292,18 +292,15 @@ void salvar_cadastros(LISTA* lista)
     if(arquivo.is_open()){
         REGISTRO *aux = lista->inicio;
 
-        while (lista->inicio != NULL)
+        while (aux != NULL)
         {
-            while(!arquivo.eof())
-            {
-                arquivo << aux->membro.id; arquivo << " ";
-                arquivo << aux->membro.nome; arquivo << " ";
-                arquivo << aux->membro.curso; arquivo << " ";
-                arquivo << aux->membro.semestre; arquivo << " ";
-                arquivo << aux->membro.ano_ingresso; arquivo << " ";
-                arquivo << endl;
-                aux = lista->inicio->next;
-            }   
+            arquivo << aux->membro.id; arquivo << " ";
+            arquivo << aux->membro.nome; arquivo << " ";
+            arquivo << aux->membro.curso; arquivo << " ";
+            arquivo << aux->membro.semestre; arquivo << " ";
+            arquivo << aux->membro.ano_ingresso; arquivo << " ";
+            arquivo << endl;
+            aux = aux->next;  
         }
         return;
     }
