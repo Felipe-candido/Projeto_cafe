@@ -45,6 +45,10 @@ int main(){
     
     // INICIA A LISTA
     LISTA lista_registros = { NULL, NULL };
+
+    // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
+    string nome_arquivo = "participantes.txt";
+    ler_txt(nome_arquivo, &lista_registros);
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
     int opcao = 0;
@@ -88,6 +92,8 @@ int main(){
             break;
 
         case 6:
+            // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
+            salvar_cadastros(&lista_registros);
             cout << "Fechando...";
             break;
         
@@ -315,14 +321,16 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
 {
     ifstream arquivo(nome_arquivo);
     if(!arquivo){
-        cerr << "Erro ao abrir arquivo externo." << endl;
+        cerr << "Erro ao abrir arquivo externo. Nenhum registro inserido." << endl;
         return;
     }
 
     
     string line;
     cout << "Conteúdo do arquivo de participantes que serão iseridos na lista." << endl;
-    cout << "=================================\n";
+    cout << "==================================================\n";
+    cout << "ID || NOME || CURSO || SEMESTRE || ANO DE INGRESSO\n";
+    cout << "==================================================\n";
     while(getline(arquivo, line)){
         cout << line << endl;
 
