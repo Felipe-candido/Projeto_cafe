@@ -7,7 +7,8 @@
 #include <fstream>
 // BIBLIOTECA PARA MANIPULAR FLUXOS DE ENTRADA E SAÍDA DE STRINGS
 #include <sstream>
-#include <locale>
+
+#include <windows.h>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ void ler_txt(const string& nome_arquivo, LISTA* lista);
 void salvar_cadastros(LISTA* lista);
     
 int main(){
-    setlocale(LC_ALL, "Portuguese");
+    SetConsoleOutputCP(CP_UTF8);
     
     // INICIA A LISTA
     LISTA lista_registros = { NULL, NULL };
