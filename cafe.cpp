@@ -32,10 +32,19 @@ typedef struct lista{
     REGISTRO *final;
 }LISTA;
 
+struct PAGANTE{
+    int id_membro;
+    int mes;
+    int ano;
+    float valor;
+
+};
+
+
 // PROTÓTIPO DAS FUNÇOES   
 int menu();
 CADASTRO cadastrar_membro();
-void registrar(LISTA *lista, CADASTRO* membro);
+void registrar_membro(LISTA *lista, CADASTRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
@@ -61,7 +70,7 @@ int main(){
         case 1:{
             // CRIANDO NOVO CADASTRO
             CADASTRO novo_cadastro = cadastrar_membro();
-            registrar(&lista_registros, &novo_cadastro);
+            registrar_membro(&lista_registros, &novo_cadastro);
             cout << "Cadastro realizado com sucesso!" << endl;
             break;
         }
@@ -163,7 +172,7 @@ CADASTRO cadastrar_membro()
 
 
 // REGISTRA UM MEMBRO NA LISTA DO SISTEMA
-void registrar(LISTA* lista, CADASTRO* membro)
+void registrar_membro(LISTA* lista, CADASTRO* membro)
 {
     if (lista == NULL) {
         cerr << "Erro: A lista não foi inicializada corretamente." << endl;
@@ -347,9 +356,38 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
         linha >> novo_cadastro.ano_ingresso;
 
         // INSERE O CADASTRO CRIADO DENTRO DA LISTA
-        registrar(lista, &novo_cadastro);
+        registrar_membro(lista, &novo_cadastro);
     }
     arquivo.close();
     return;
+}
+
+
+// FUNÇÃO PARA CADASTRO DE PAGANTES
+PAGANTE cadastrar_pagante()
+{
+    // CRIA UM NOVO CADASTRO;j
+    PAGANTE novo_pagante;
+    cout << endl;
+    cout << "CADASTRAR PAGAMENTO\n";
+    cout << "================================\n";
+    
+    cout << "ID do membro: ";
+    cin >> novo_pagante.id_membro;
+    
+    
+    cout << "Mes do pagamento: ";
+    cin >> novo_pagante.mes;
+    
+
+    cout << "Ano do pagamento: ";
+    cin >> novo_pagante.ano;
+    
+
+    cout << "Valor: ";
+    cin >> novo_pagante.valor;
+    cout << endl;
+
+    return novo_pagante;
 }
 
