@@ -54,7 +54,8 @@ int main(){
     SetConsoleOutputCP(CP_UTF8);
     
     // INICIA A LISTA
-    LISTA lista_registros = { NULL, NULL };
+    LISTA lista_registros = {NULL, NULL};
+    LISTA lista_pagantes = {NULL, NULL};
 
     // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
     string nome_arquivo = "participantes.txt";
