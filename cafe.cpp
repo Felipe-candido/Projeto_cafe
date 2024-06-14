@@ -13,13 +13,13 @@
 using namespace std;
 
 // ESTRUTURAS DO SISTEMA
-typedef struct MEMBRO{
+typedef struct CADASTRO{
     int id;
     string nome;
     int semestre;
     int ano_ingresso;
     string curso;
-}CADASTRO;
+}MEMBRO;
 
 struct REGISTRO{
     MEMBRO membro;
@@ -43,8 +43,8 @@ struct PAGANTE{
 
 // PROTÓTIPO DAS FUNÇOES   
 int menu();
-CADASTRO cadastrar_membro();
-void registrar_membro(LISTA *lista, CADASTRO* membro);
+MEMBRO cadastrar_membro();
+void registrar_membro(LISTA *lista, MEMBRO* membro);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA *lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
@@ -70,7 +70,7 @@ int main(){
         {
         case 1:{
             // CRIANDO NOVO CADASTRO
-            CADASTRO novo_cadastro = cadastrar_membro();
+            MEMBRO novo_cadastro = cadastrar_membro();
             registrar_membro(&lista_registros, &novo_cadastro);
             cout << "Cadastro realizado com sucesso!" << endl;
             break;
@@ -143,10 +143,10 @@ int menu()
 }
 
 // FUNÇÃO PARA CRIA UM CADASTRO DE MEMBROS
-CADASTRO cadastrar_membro()
+MEMBRO cadastrar_membro()
 {
     // CRIA UM NOVO CADASTRO;
-    CADASTRO novo_membro;
+    MEMBRO novo_membro;
     cout << endl;
     cout << "CADASTRO DE MEMBROS\n";
     cout << "================================\n";
@@ -173,7 +173,7 @@ CADASTRO cadastrar_membro()
 
 
 // REGISTRA UM MEMBRO NA LISTA DO SISTEMA
-void registrar_membro(LISTA* lista, CADASTRO* membro)
+void registrar_membro(LISTA* lista, MEMBRO* membro)
 {
     if (lista == NULL) {
         cerr << "Erro: A lista não foi inicializada corretamente." << endl;
@@ -338,14 +338,15 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
 
     
     string line;
-    cout << "Conteúdo do arquivo de participantes que serão iseridos na lista." << endl;
+    cout << "_________________________________________________________________________\n";
+    cout << "Conteúdo do arquivo de participantes que será iserido na lista." << endl;
     cout << "==================================================\n";
     cout << "ID || NOME || CURSO || SEMESTRE || ANO DE INGRESSO\n";
     cout << "==================================================\n";
     while(getline(arquivo, line)){
         cout << line << endl;
 
-        CADASTRO novo_cadastro;
+        MEMBRO novo_cadastro;
         // CRIA UM OBJETO QUE VAI RECEBER UMA LINHA DO ARQUIVO TXT PARA MANIPULAR
         istringstream linha(line);
 
