@@ -97,6 +97,7 @@ int main(){
             MEMBRO novo_cadastro = cadastrar_membro();
             registrar_membro(&lista_registros, &novo_cadastro);
             cout << "Cadastro realizado com sucesso!" << endl;
+            limpar_lista2(&lista_contribuintes);
             break;
         }
 
@@ -120,21 +121,21 @@ int main(){
             break;
         }
 
-        case 5:{
-            // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
-            string nome_arquivo = "participantes.txt";
-            ler_txt(nome_arquivo, &lista_registros);
-            break;
-        }
+        // case 5:{
+        //     // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
+        //     string nome_arquivo = "participantes.txt";
+        //     ler_txt(nome_arquivo, &lista_registros);
+        //     break;
+        // }
         
 
-        case 6:
-            // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
-            salvar_cadastros(&lista_registros);
-            cout << "Cadastros salvos com sucesso no documento participantes.txt" << endl;
-            break;
+        // case 6:
+        //     // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
+        //     salvar_cadastros(&lista_registros);
+        //     cout << "Cadastros salvos com sucesso no documento participantes.txt" << endl;
+        //     break;
 
-        case 7:
+        case 5:
             // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
             salvar_contribuintes(&lista_contribuintes);
@@ -148,7 +149,7 @@ int main(){
         cout << "Por favor insira um numero válido" << endl;
             break;
         }
-    }while(opcao != 7);
+    }while(opcao != 5);
     
     return 0;
 }
@@ -164,15 +165,15 @@ int menu()
     cout << "2 - Exibir membros\n";
     cout << "3 - Editar membros\n";
     cout << "4 - Registrar pagamento\n";
-    cout << "5 - Ler arquivo externo\n";
-    cout << "6 - Gravar em arquivo externo\n";
-    cout << "7 - Sair\n";
+    // cout << "5 - Ler arquivo externo\n";
+    // cout << "6 - Gravar em arquivo externo\n";
+    cout << "5 - Sair\n";
     
     // (cin >> opção) TENTA LER A ENTRADA E ARMAZENA NA VARIÁVEL OPCAO
     while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
     {
         // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
-        cout << "Entrada inválida, por favor insira um nú6mero" << endl;
+        cout << "Entrada inválida, por favor insira um número" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
@@ -194,10 +195,25 @@ MEMBRO cadastrar_membro()
     
     cout << "Semestre: ";
     cin >> novo_membro.semestre;
+    while(!(cin >> novo_membro.semestre) ) // VERIFICA ESTADO DE FALHA DO CIN
+    {
+        // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+        cout << "Entrada inválida, por favor insira um número" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
     
 
     cout << "Ano de ingresso: ";
     cin >> novo_membro.ano_ingresso;
+    while(!(cin >> novo_membro.ano_ingresso) ) // VERIFICA ESTADO DE FALHA DO CIN
+    {
+        // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+        cout << "Entrada inválida, por favor insira um número" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    
     
 
     cout << "Curso(SI, DSM ou GE): ";
@@ -453,6 +469,14 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
     if(validar_id(lista1, novo_pagamento.id_membro) == true){
         cout << "Mes do pagamento: ";
         cin >> novo_pagamento.mes;
+        while(!(cin >> novo_pagamento.mes) ) // VERIFICA ESTADO DE FALHA DO CIN
+        {
+            // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+            cout << "Entrada inválida, por favor insira um número" << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    
         
         cout << "Ano do pagamento: ";
         cin >> novo_pagamento.ano;
