@@ -27,26 +27,39 @@ struct REGISTRO{
     REGISTRO* prev;
 };
 
+typedef struct pagamento{
+    int id_membro;
+    int mes;
+    int ano;
+    float valor;
+}PAGAMENTO;
+
+struct NODE{
+    PAGAMENTO pagamento;
+    NODE* next;
+    NODE* prev;
+};
+
 typedef struct lista{
     REGISTRO *inicio;
     REGISTRO *final;
 }LISTA;
 
-struct PAGANTE{
-    int id_membro;
-    int mes;
-    int ano;
-    float valor;
+typedef struct lista2{
+    NODE *inicio;
+    NODE *final;
+}LISTA2;
 
-};
 
 
 // PROTÓTIPO DAS FUNÇOES   
 int menu();
 MEMBRO cadastrar_membro();
-void registrar_membro(LISTA *lista, MEMBRO* membro);
+PAGAMENTO cadastrar_pagamento();
+void registrar_membro(LISTA* lista, CADASTRO* membro);
+void registrar_pagamento(LISTA* lista, PAGAMENTO* pagamento);
 void exibir_membros(LISTA* lista);
-void editar_membros(LISTA *lista, int id);
+void editar_membros(LISTA* lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
 void salvar_cadastros(LISTA* lista);
     
@@ -95,14 +108,22 @@ int main(){
             ler_txt(nome_arquivo, &lista_registros);
             break;
         }
+        
+        // case 5:{
+        //     // CRIANDO NOVO CADASTRO
+        //     PAGAMENTO novo_cadastro = cadastrar_pagamento();
+        //     registrar_membro(&lista_registros, &novo_cadastro);
+        //     cout << "Cadastro realizado com sucesso!" << endl;
+        //     break;
+        // }
 
-        case 5:
+        case 6:
             // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
             cout << "Cadastros salvos com sucesso no documento participantes.txt" << endl;
             break;
 
-        case 6:
+        case 7:
             // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
             cout << "Fechando...";
@@ -112,7 +133,7 @@ int main(){
         cout << "Por favor insira um numero válido" << endl;
             break;
         }
-    }while(opcao != 6);
+    }while(opcao != 7);
     
     return 0;
 }
@@ -127,9 +148,10 @@ int menu()
     cout << "1 - Cadastrar Membro\n";
     cout << "2 - Exibir membros\n";
     cout << "3 - Editar membros\n";
-    cout << "4 - Ler arquivo externo\n";
-    cout << "5 - Gravar em arquivo externo\n";
-    cout << "6 - Sair\n";
+    cout << "4 - Registrar pagamento\n";
+    cout << "5 - Ler arquivo externo\n";
+    cout << "6 - Gravar em arquivo externo\n";
+    cout << "7 - Sair\n";
     
     // (cin >> opção) TENTA LER A ENTRADA E ARMAZENA NA VARIÁVEL OPCAO
     while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
@@ -203,9 +225,8 @@ void registrar_membro(LISTA* lista, MEMBRO* membro)
         lista->inicio = novo_registro;
         novo_registro->membro.id = 1;
     }
+    
     lista->final = novo_registro;
-
-
     return;
 }
 
@@ -366,30 +387,57 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
 
 
 // FUNÇÃO PARA CADASTRO DE PAGANTES
-PAGANTE cadastrar_pagante()
+PAGAMENTO cadastrar_pagamento()
 {
     // CRIA UM NOVO CADASTRO;j
-    PAGANTE novo_pagante;
+    PAGAMENTO novo_pagamento;
     cout << endl;
     cout << "CADASTRAR PAGAMENTO\n";
     cout << "================================\n";
     
     cout << "ID do membro: ";
-    cin >> novo_pagante.id_membro;
+    cin >> novo_pagamento.id_membro;
     
     
     cout << "Mes do pagamento: ";
-    cin >> novo_pagante.mes;
+    cin >> novo_pagamento.mes;
     
 
     cout << "Ano do pagamento: ";
-    cin >> novo_pagante.ano;
+    cin >> novo_pagamento.ano;
     
 
     cout << "Valor: ";
-    cin >> novo_pagante.valor;
+    cin >> novo_pagamento.valor;
     cout << endl;
 
-    return novo_pagante;
+    return novo_pagamento;
 }
 
+
+ // FUNÇÃO PARA REGISTRAR PAGAMENTOS NA LISTA DO SISTEMA
+ void registrar_pagamento(LISTA2* lista, PAGAMENTO* pagamento)
+ {
+    if (lista = NULL)
+    {
+        cerr << "Erro ao iniciar a lista.\n";
+        return;
+    }
+    
+    NODE* novo_registro = new NODE;
+
+    novo_registro->pagamento = *pagamento;
+    novo_registro->next = NULL;
+    novo_registro->prev = lista->final;
+
+    if(lista->final != NULL){
+    lista->inicio = novo_registro;
+    }
+
+    else{
+    lista->final->next = novo_registro;
+    }
+    
+    lista->final = novo_registro;
+    return;
+ }
