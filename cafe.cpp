@@ -71,6 +71,7 @@ void salvar_contribuintes(LISTA2* lista2, LISTA* lista1);
 void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2);
 void exibir_contribuintes(LISTA2* lista2);
 void salvar_contribuintes_por_curso(LISTA2* lista2);
+bool id_existe(LISTA2* lista, int id);
 
 int main(){
     SetConsoleOutputCP(CP_UTF8);
@@ -492,8 +493,14 @@ void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2)
         linha >> novo_cadastro.valor;
         linha >> novo_cadastro.curso;
 
-        // INSERE O CADASTRO CRIADO DENTRO DA LISTA
-        registrar_pagamento(lista2, &novo_cadastro);
+        // Verifica se o ID já existe na lista antes de inserir
+        if (!id_existe(lista2, novo_cadastro.id_membro)) {
+            registrar_pagamento(lista2, &novo_cadastro);
+        } else {
+            // cout << "ID duplicado encontrado: " << novo_cadastro.id_membro << ". Ignorando o registro." << endl;
+        }
+
+        
     }
     arquivo.close();
     return;
@@ -662,7 +669,7 @@ void limpar_lista2(LISTA2* lista2)
 void salvar_contribuintes(LISTA2* lista2, LISTA* lista1)
 {
     // CRIA E ABRE ARQUIVO PARA LEITURA
-    ofstream arquivo("contribuintes.txt");
+    ofstream arquivo("contribuintes.txt", ios::out | ios::trunc);
     if(!arquivo){
         cerr << "Erro ao abrir o arquivo de contribuintes.";
         return;
@@ -709,12 +716,12 @@ void salvar_contribuintes_por_curso(LISTA2* lista2) {
         return;
     }
     
-    ofstream arquivo_DSM("contribuintes_DSM.txt");
-    ofstream arquivo_SI("contribuintes_SI.txt");
-    ofstream arquivo_GE("contribuintes_GE.txt");
+    ofstream arquivo_DSM("contribuintes_DSM.txt", ios::out | ios::trunc);
+    ofstream arquivo_SI("contribuintes_SI.txt", ios::out | ios::trunc);
+    ofstream arquivo_GE("contribuintes_GE.txt", ios::out | ios::trunc);
     
     if (!arquivo_DSM || !arquivo_SI || !arquivo_GE) {
-        cerr << "Erro ao abrir um dos arquivos de contribuintes." << endl;
+        cerr << "Erro ao abrir algum dos arquivos de contribuintes." << endl;
         return;
     }
     
@@ -728,13 +735,12 @@ void salvar_contribuintes_por_curso(LISTA2* lista2) {
         } else if (aux->pagamento.curso == "GE" || aux->pagamento.curso == "ge") {
             arquivo = &arquivo_GE;
         } else {
-            cerr << "Curso desconhecido para o contribuinte com ID " << aux->pagamento.id_membro << endl;
+            // cerr << "Curso desconhecido para o contribuinte com ID " << aux->pagamento.id_membro << endl;
             aux = aux->next;
             continue;
         }
         
         *arquivo << aux->pagamento.id_membro << " "
-                 << aux->pagamento.nome << " "
                  << aux->pagamento.curso << " "
                  << aux->pagamento.mes << " "
                  << aux->pagamento.ano << " "
@@ -746,4 +752,17 @@ void salvar_contribuintes_por_curso(LISTA2* lista2) {
     arquivo_DSM.close();
     arquivo_SI.close();
     arquivo_GE.close();
+}
+
+
+// FUNÇÃO PARA VERIFICAR SE JA EXISTE O MEMBRO NO TXT
+bool id_existe(LISTA2* lista, int id) {
+    NODE* aux = lista->inicio;
+    while (aux != NULL) {
+        if (aux->pagamento.id_membro == id) {
+            return true; // ID encontrado na lista
+        }
+        aux = aux->next;
+    }
+    return false; // ID não encontrado na lista
 }
