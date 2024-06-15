@@ -334,7 +334,7 @@ void exibir_contribuintes(LISTA2* lista2)
         }
     }
     else{
-        cout << "Lista de membros vazia..." << endl;
+        cout << "Lista de contribuintes vazia..." << endl;
     }
     return;
 }
