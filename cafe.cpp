@@ -195,24 +195,24 @@ MEMBRO cadastrar_membro()
     
     cout << "Semestre: ";
     cin >> novo_membro.semestre;
-    while(!(cin >> novo_membro.semestre) ) // VERIFICA ESTADO DE FALHA DO CIN
-    {
-        // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
-        cout << "Entrada inválida, por favor insira um número" << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
+    // while(!(cin >> novo_membro.semestre) ) // VERIFICA ESTADO DE FALHA DO CIN
+    // {
+    //     // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+    //     cout << "Entrada inválida, por favor insira um número" << endl;
+    //     cin.clear();
+    //     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    // }
     
 
     cout << "Ano de ingresso: ";
     cin >> novo_membro.ano_ingresso;
-    while(!(cin >> novo_membro.ano_ingresso) ) // VERIFICA ESTADO DE FALHA DO CIN
-    {
-        // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
-        cout << "Entrada inválida, por favor insira um número" << endl;
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
+    // while(!(cin >> novo_membro.ano_ingresso) ) // VERIFICA ESTADO DE FALHA DO CIN
+    // {
+    //     // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+    //     cout << "Entrada inválida, por favor insira um número" << endl;
+    //     cin.clear();
+    //     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    // }
     
     
 
@@ -469,13 +469,13 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
     if(validar_id(lista1, novo_pagamento.id_membro) == true){
         cout << "Mes do pagamento: ";
         cin >> novo_pagamento.mes;
-        while(!(cin >> novo_pagamento.mes) ) // VERIFICA ESTADO DE FALHA DO CIN
-        {
-            // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
-            cout << "Entrada inválida, por favor insira um número" << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
+        // while(!(cin >> novo_pagamento.mes) ) // VERIFICA ESTADO DE FALHA DO CIN
+        // {
+        //     // SE A ENTRADA FALHAR, O PROGRAMA LIMPA O CIN E CONTINUA VERIFICANDO OUTRAS ENTRADAS DO USUÁRIO
+        //     cout << "Entrada inválida, por favor insira um número" << endl;
+        //     cin.clear();
+        //     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        // }
     
         
         cout << "Ano do pagamento: ";
