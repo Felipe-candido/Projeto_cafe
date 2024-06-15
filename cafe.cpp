@@ -63,13 +63,15 @@ void editar_membros(LISTA* lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
 void salvar_cadastros(LISTA* lista);
 bool validar_id(LISTA* lista1, int id_pagamento);
-    
+void limpar_lista1(LISTA* lista1);
+void limpar_lista2(LISTA2* lista2);
+void salvar_contribuintes(LISTA2* lista2);
 int main(){
     SetConsoleOutputCP(CP_UTF8);
     
     // INICIA A LISTA
     LISTA lista_registros = {NULL, NULL};
-    LISTA2 lista_pagantes = {NULL, NULL};
+    LISTA2 lista_contribuintes = {NULL, NULL};
 
     // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
     string nome_arquivo = "participantes.txt";
@@ -106,7 +108,7 @@ int main(){
         case 4:{
             // REGISTRANDO NOVO PAGAMENTO
             PAGAMENTO novo_cadastro = cadastrar_pagamento(&lista_registros);
-            registrar_pagamento(&lista_pagantes, &novo_cadastro);
+            registrar_pagamento(&lista_contribuintes, &novo_cadastro);
             break;
         }
 
@@ -127,6 +129,10 @@ int main(){
         case 7:
             // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
+            salvar_contribuintes(&lista_contribuintes);
+            // AO FECHAR O PROGRAMA, A LISTA É APAGADA PARA EVITAR VAZAMENTOS DE MEMÓRIA
+            limpar_lista1(&lista_registros);
+            limpar_lista2(&lista_contribuintes);
             cout << "Fechando...";
             break;
         
@@ -358,7 +364,6 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
         return;
     }
 
-    
     string line;
     cout << "_________________________________________________________________________\n";
     cout << "Conteúdo do arquivo de participantes que será iserido na lista." << endl;
@@ -477,4 +482,80 @@ bool validar_id(LISTA* lista1, int id_pagamento)
         }
     }
     return false;
+}
+
+
+// FUNÇÃO PARA DESALOCAR AS MEMÓRIAS ANTES DE FECHAR O PROGRAMA
+void limpar_lista1(LISTA* lista1)
+{
+    if(lista1->inicio == NULL){
+        cout << "A comunidade de membros do café está vazia.\n";
+        return;
+    }
+
+    REGISTRO* aux;
+    aux = lista1->inicio;
+    
+    while(aux != NULL){
+        REGISTRO* apagar = aux;
+        aux = aux->next;
+        delete apagar;
+    }
+    lista1->inicio = NULL;
+    lista1->final = NULL;
+}
+
+
+void limpar_lista2(LISTA2* lista2)
+{
+    if(lista2->inicio == NULL){
+        cout << "A comunidade de membros do café está vazia.\n";
+        return;
+    }
+
+    NODE* aux;
+    aux = lista2->inicio;
+    
+    while(aux != NULL){
+        NODE* apagar = aux;
+        aux = aux->next;
+        delete apagar;
+    }
+    lista2->inicio = NULL;
+    lista2->final = NULL;
+}
+
+
+// FUNÇÃO PARA SALVAR OS PAGAMENTOS EM ARQUIVO TXT
+void salvar_contribuintes(LISTA2* lista2)
+{
+    // CRIA E ABRE ARQUIVO PARA LEITURA
+    ofstream arquivo("contribuintes.txt");
+    if(!arquivo){
+        cerr << "Erro ao abrir o arquivo de contribuintes.";
+        return;
+    }
+
+    // VERIFICA SE A LISTA DO SISTEMA ESTÁ VAZIA
+    if (lista2 == NULL) {
+        cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
+        return;
+    }
+    
+    // VERIFICA SE O ARQUIVO ABRIU CORRETAMENTE
+    if(arquivo.is_open()){
+        NODE* aux = lista2->inicio;
+
+        // PERCORRE A LISTA SALVANDO OS REGISTROS
+        while (aux != NULL)
+        {
+            arquivo << aux->pagamento.id_membro; arquivo << " ";
+            arquivo << aux->pagamento.mes; arquivo << " ";
+            arquivo << aux->pagamento.ano; arquivo << " ";
+            arquivo << aux->pagamento.valor; arquivo << " ";
+            arquivo << endl;
+            aux = aux->next;  
+        }
+        return;
+    }
 }
