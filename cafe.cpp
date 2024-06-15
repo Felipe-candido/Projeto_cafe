@@ -55,13 +55,14 @@ typedef struct lista2{
 // PROTÓTIPO DAS FUNÇOES   
 int menu();
 MEMBRO cadastrar_membro();
-PAGAMENTO cadastrar_pagamento();
+PAGAMENTO cadastrar_pagamento(LISTA* lista1);
 void registrar_membro(LISTA* lista, CADASTRO* membro);
 void registrar_pagamento(LISTA2* lista, PAGAMENTO* pagamento);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA* lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
 void salvar_cadastros(LISTA* lista);
+bool validar_id(LISTA* lista1, int id_pagamento);
     
 int main(){
     SetConsoleOutputCP(CP_UTF8);
@@ -104,9 +105,8 @@ int main(){
 
         case 4:{
             // REGISTRANDO NOVO PAGAMENTO
-            PAGAMENTO novo_cadastro = cadastrar_pagamento();
+            PAGAMENTO novo_cadastro = cadastrar_pagamento(&lista_registros);
             registrar_pagamento(&lista_pagantes, &novo_cadastro);
-            cout << "Pagamento realizado com sucesso!" << endl;
             break;
         }
 
@@ -207,7 +207,7 @@ void registrar_membro(LISTA* lista, MEMBRO* membro)
     // VALIDAÇÃO PARA VERIFICAR CRIAÇÃO DO NOVO REGISTRO NO SISTEMA
     if (novo_registro == NULL){
         cerr << "Acabou a memória." << endl;
-        exit(1);
+        return;
     }
 
     // CRIAÇÃO DO REGISTRO
@@ -388,7 +388,7 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
 
 
 // FUNÇÃO PARA CADASTRO DE PAGANTES
-PAGAMENTO cadastrar_pagamento()
+PAGAMENTO cadastrar_pagamento(LISTA* lista1)
 {
     // CRIA UM NOVO CADASTRO;j
     PAGAMENTO novo_pagamento;
@@ -399,19 +399,31 @@ PAGAMENTO cadastrar_pagamento()
     cout << "ID do membro: ";
     cin >> novo_pagamento.id_membro;
     
-    
+    if(validar_id(lista1, novo_pagamento.id_membro) == true){
     cout << "Mes do pagamento: ";
     cin >> novo_pagamento.mes;
     
 
     cout << "Ano do pagamento: ";
     cin >> novo_pagamento.ano;
+    while(novo_pagamento.ano < 2024){
+        cout << "por favor digite um ano válido.\n";
+        cout << "Ano do pagamento: ";
+        cin >> novo_pagamento.ano;
+    }
     
 
     cout << "Valor: ";
     cin >> novo_pagamento.valor;
     cout << endl;
+    cout << "Pagamento realizado com sucesso!" << endl;
+    }
 
+    else{
+        cout << "Esse id não corresponde a nenhum membro cadastrado.\n";
+        cout << "Por favor cadastre esse membro antes de realizar o pagamento.\n";
+        novo_pagamento.id_membro = -1;
+    }  
     return novo_pagamento;
 }
 
@@ -446,9 +458,23 @@ PAGAMENTO cadastrar_pagamento()
 
 
 // FUNÇÃO PARA VALIDAR ID DO PAGAMENTO
-// bool validar_id(LISTA* lista1, LISTA2* lista2)
-// {
-//     if(lista1 = NULL || lista2 = NULL){
-//         cerr <<
-//     }
-// }
+bool validar_id(LISTA* lista1, int id_pagamento)
+{
+    if(lista1 == NULL){
+        cerr << "A lista de membros stá vazia.\n";
+        return false;
+    }
+
+    REGISTRO* aux = lista1->inicio;
+   
+    while(aux != NULL){
+        if(aux->membro.id == id_pagamento){
+            return true;
+        }
+        
+        else{
+            aux = aux->next;
+        }
+    }
+    return false;
+}
