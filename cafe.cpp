@@ -57,7 +57,7 @@ int menu();
 MEMBRO cadastrar_membro();
 PAGAMENTO cadastrar_pagamento();
 void registrar_membro(LISTA* lista, CADASTRO* membro);
-void registrar_pagamento(LISTA* lista, PAGAMENTO* pagamento);
+void registrar_pagamento(LISTA2* lista, PAGAMENTO* pagamento);
 void exibir_membros(LISTA* lista);
 void editar_membros(LISTA* lista, int id);
 void ler_txt(const string& nome_arquivo, LISTA* lista);
@@ -68,7 +68,7 @@ int main(){
     
     // INICIA A LISTA
     LISTA lista_registros = {NULL, NULL};
-    LISTA lista_pagantes = {NULL, NULL};
+    LISTA2 lista_pagantes = {NULL, NULL};
 
     // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
     string nome_arquivo = "participantes.txt";
@@ -103,19 +103,20 @@ int main(){
             break;
 
         case 4:{
+            // REGISTRANDO NOVO PAGAMENTO
+            PAGAMENTO novo_cadastro = cadastrar_pagamento();
+            registrar_pagamento(&lista_pagantes, &novo_cadastro);
+            cout << "Pagamento realizado com sucesso!" << endl;
+            break;
+        }
+
+        case 5:{
             // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
             string nome_arquivo = "participantes.txt";
             ler_txt(nome_arquivo, &lista_registros);
             break;
         }
         
-        // case 5:{
-        //     // CRIANDO NOVO CADASTRO
-        //     PAGAMENTO novo_cadastro = cadastrar_pagamento();
-        //     registrar_membro(&lista_registros, &novo_cadastro);
-        //     cout << "Cadastro realizado com sucesso!" << endl;
-        //     break;
-        // }
 
         case 6:
             // GRAVA TODOS 0S REGISTROS PRESENTES NA ESTRUTURA DE LISTA EM UM ARQUIVO TXT
@@ -418,7 +419,7 @@ PAGAMENTO cadastrar_pagamento()
  // FUNÇÃO PARA REGISTRAR PAGAMENTOS NA LISTA DO SISTEMA
  void registrar_pagamento(LISTA2* lista, PAGAMENTO* pagamento)
  {
-    if (lista = NULL)
+    if (lista == NULL)
     {
         cerr << "Erro ao iniciar a lista.\n";
         return;
@@ -431,13 +432,23 @@ PAGAMENTO cadastrar_pagamento()
     novo_registro->prev = lista->final;
 
     if(lista->final != NULL){
-    lista->inicio = novo_registro;
+    lista->final->next = novo_registro;
     }
 
     else{
-    lista->final->next = novo_registro;
+    lista->inicio = novo_registro;
     }
     
     lista->final = novo_registro;
     return;
  }
+
+
+
+// FUNÇÃO PARA VALIDAR ID DO PAGAMENTO
+// bool validar_id(LISTA* lista1, LISTA2* lista2)
+// {
+//     if(lista1 = NULL || lista2 = NULL){
+//         cerr <<
+//     }
+// }
