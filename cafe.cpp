@@ -29,6 +29,8 @@ struct REGISTRO{
 
 typedef struct pagamento{
     int id_membro;
+    string nome;
+    string curso;
     int mes;
     int ano;
     float valor;
@@ -66,6 +68,8 @@ bool validar_id(LISTA* lista1, int id_pagamento);
 void limpar_lista1(LISTA* lista1);
 void limpar_lista2(LISTA2* lista2);
 void salvar_contribuintes(LISTA2* lista2);
+void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2);
+
 int main(){
     SetConsoleOutputCP(CP_UTF8);
     
@@ -76,6 +80,10 @@ int main(){
     // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
     string nome_arquivo = "participantes.txt";
     ler_txt(nome_arquivo, &lista_registros);
+
+    // AO INICIAR O PROGRAMA, ELE AUTOMATICAMENTE PUXA OS DADOS DO ARQUIVO TXT E ALIMENTA A LISTA DO SISTEMA
+    string nome_arquivo2 = "contribuintes.txt";
+    ler_contribuintes(nome_arquivo2, &lista_contribuintes);
     
     // ESTRUTURA PARA CHAMAR O MENU DURANTE O FUNCIONAMENTO DO PROGRAMA
     int opcao = 0;
@@ -392,6 +400,44 @@ void ler_txt(const string& nome_arquivo, LISTA* lista)
 }
 
 
+// FUNÇÃO PARA LER E ALIMENTAR A ESTRUTURA COM UM ARQUIVO DE CONTRIBUINTES EXTERNO
+void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2)
+{
+    ifstream arquivo(nome_arquivo);
+    if(!arquivo){
+        cerr << "Erro ao abrir arquivo externo. Nenhum registro inserido." << endl;
+        return;
+    }
+
+    string line;
+    cout << endl;
+    cout << "_________________________________________________________________________\n";
+    cout << "Conteúdo do arquivo de contribuintes que será iserido na lista." << endl;
+    cout << "==================================================\n";
+    cout << "ID || NOME || CURSO || MES || ANO || VALOR \n";
+    cout << "==================================================\n";
+    while(getline(arquivo, line)){
+        cout << line << endl;
+
+        PAGAMENTO novo_cadastro;
+        // CRIA UM OBJETO QUE VAI RECEBER UMA LINHA DO ARQUIVO TXT PARA MANIPULAR
+        istringstream linha(line);
+
+        // CONVERTE CADA PARTE DA LINHA DENTRO DA ESTRUTURA DE CADASTRO
+        linha >> novo_cadastro.id_membro;
+        linha >> novo_cadastro.nome;
+        linha >> novo_cadastro.curso;
+        linha >> novo_cadastro.ano;
+        linha >> novo_cadastro.valor;
+
+        // INSERE O CADASTRO CRIADO DENTRO DA LISTA
+        registrar_pagamento(lista2, &novo_cadastro);
+    }
+    arquivo.close();
+    return;
+}
+
+
 // FUNÇÃO PARA CADASTRO DE PAGANTES
 PAGAMENTO cadastrar_pagamento(LISTA* lista1)
 {
@@ -405,24 +451,34 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
     cin >> novo_pagamento.id_membro;
     
     if(validar_id(lista1, novo_pagamento.id_membro) == true){
-    cout << "Mes do pagamento: ";
-    cin >> novo_pagamento.mes;
-    
-
-    cout << "Ano do pagamento: ";
-    cin >> novo_pagamento.ano;
-    while(novo_pagamento.ano < 2024){
-        cout << "por favor digite um ano válido.\n";
+        cout << "Mes do pagamento: ";
+        cin >> novo_pagamento.mes;
+        
         cout << "Ano do pagamento: ";
         cin >> novo_pagamento.ano;
+        while(novo_pagamento.ano < 2024){
+            cout << "por favor digite um ano válido.\n";
+            cout << "Ano do pagamento: ";
+            cin >> novo_pagamento.ano;
+        }
+        
+        cout << "Valor: ";
+        cin >> novo_pagamento.valor;
+        cout << endl;
+       
+        cout << "Pagamento realizado com sucesso!" << endl;
+       
+        REGISTRO* aux = lista1->inicio;
+        while (aux != NULL){
+            if(aux->membro.id == novo_pagamento.id_membro){
+                novo_pagamento.nome = aux->membro.nome;
+                novo_pagamento.curso = aux->membro.curso;
+            }
+            aux = aux->next;
+        }
     }
-    
 
-    cout << "Valor: ";
-    cin >> novo_pagamento.valor;
-    cout << endl;
-    cout << "Pagamento realizado com sucesso!" << endl;
-    }
+    
 
     else{
         cout << "Esse id não corresponde a nenhum membro cadastrado.\n";
@@ -443,6 +499,10 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
     }
     
     NODE* novo_registro = new NODE;
+    if(novo_registro == NULL){
+        cerr << "Erro ao alocar memória para novo registro de pagamento.\n";
+    return;
+}
 
     novo_registro->pagamento = *pagamento;
     novo_registro->next = NULL;
