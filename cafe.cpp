@@ -33,7 +33,7 @@ typedef struct pagamento{
     string curso;
     int mes;
     int ano;
-    double valor;
+    float valor;
 }PAGAMENTO;
 
 struct NODE{
@@ -484,8 +484,7 @@ void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2)
 
         // CONVERTE CADA PARTE DA LINHA DENTRO DA ESTRUTURA DE CADASTRO
         linha >> novo_cadastro.id_membro;
-        linha >> novo_cadastro.nome;
-        linha >> novo_cadastro.curso;
+        linha >> novo_cadastro.mes;
         linha >> novo_cadastro.ano;
         linha >> novo_cadastro.valor;
 
