@@ -67,9 +67,10 @@ void salvar_cadastros(LISTA* lista);
 bool validar_id(LISTA* lista1, int id_pagamento);
 void limpar_lista1(LISTA* lista1);
 void limpar_lista2(LISTA2* lista2);
-void salvar_contribuintes(LISTA2* lista2);
+void salvar_contribuintes(LISTA2* lista2, LISTA* lista1);
 void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2);
 void exibir_contribuintes(LISTA2* lista2);
+void salvar_contribuintes_por_curso(LISTA2* lista2);
 
 int main(){
     SetConsoleOutputCP(CP_UTF8);
@@ -144,7 +145,8 @@ int main(){
         case 6:
             // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
-            salvar_contribuintes(&lista_contribuintes);
+            salvar_contribuintes(&lista_contribuintes, &lista_registros);
+            salvar_contribuintes_por_curso(&lista_contribuintes);
             // AO FECHAR O PROGRAMA, A LISTA É APAGADA PARA EVITAR VAZAMENTOS DE MEMÓRIA
             limpar_lista1(&lista_registros);
             limpar_lista2(&lista_contribuintes);
@@ -328,6 +330,7 @@ void exibir_contribuintes(LISTA2* lista2)
             cout << "MES: " << aux->pagamento.mes << endl;
             cout << "ANO: " << aux->pagamento.ano << endl;
             cout << "VALOR: " << aux->pagamento.valor << endl;
+            cout << "CURSO: " << aux->pagamento.curso << endl;
             cout << "-----------------------\n";
             aux = aux->next;
             
@@ -473,7 +476,7 @@ void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2)
     cout << "_________________________________________________________________________\n";
     cout << "Conteúdo do arquivo de contribuintes que será iserido na lista." << endl;
     cout << "==================================================\n";
-    cout << "ID || NOME || CURSO || MES || ANO || VALOR \n";
+    cout << "ID || NOME || CURSO || MES || ANO || VALOR || CURSO\n";
     cout << "==================================================\n";
     while(getline(arquivo, line)){
         cout << line << endl;
@@ -487,6 +490,7 @@ void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2)
         linha >> novo_cadastro.mes;
         linha >> novo_cadastro.ano;
         linha >> novo_cadastro.valor;
+        linha >> novo_cadastro.curso;
 
         // INSERE O CADASTRO CRIADO DENTRO DA LISTA
         registrar_pagamento(lista2, &novo_cadastro);
@@ -544,8 +548,6 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
         }
     }
 
-    
-
     else{
         cout << "Esse id não corresponde a nenhum membro cadastrado.\n";
         cout << "Por favor cadastre esse membro antes de realizar o pagamento.\n";
@@ -568,7 +570,11 @@ PAGAMENTO cadastrar_pagamento(LISTA* lista1)
     if(novo_registro == NULL){
         cerr << "Erro ao alocar memória para novo registro de pagamento.\n";
     return;
-}
+    }
+
+    if(pagamento->id_membro == -1){
+        return;
+    }
 
     novo_registro->pagamento = *pagamento;
     novo_registro->next = NULL;
@@ -653,7 +659,7 @@ void limpar_lista2(LISTA2* lista2)
 
 
 // FUNÇÃO PARA SALVAR OS PAGAMENTOS EM ARQUIVO TXT
-void salvar_contribuintes(LISTA2* lista2)
+void salvar_contribuintes(LISTA2* lista2, LISTA* lista1)
 {
     // CRIA E ABRE ARQUIVO PARA LEITURA
     ofstream arquivo("contribuintes.txt");
@@ -679,9 +685,65 @@ void salvar_contribuintes(LISTA2* lista2)
             arquivo << aux->pagamento.mes; arquivo << " ";
             arquivo << aux->pagamento.ano; arquivo << " ";
             arquivo << aux->pagamento.valor; arquivo << " ";
+            // PROCURA O CURSO CORRESPONDENTE NA LISTA1
+            REGISTRO* membro_aux = lista1->inicio;
+            while (membro_aux != NULL) {
+                if (membro_aux->membro.id == aux->pagamento.id_membro) {
+                    arquivo << membro_aux->membro.curso << endl;
+                    break;
+                }
+                membro_aux = membro_aux->next;
+            }
             arquivo << endl;
             aux = aux->next;  
         }
         return;
     }
+}
+
+
+// FUNÇÃO PARA SEPARAR OS CONTRIBUINTES POR CURSO E SALVAR EM TXT
+void salvar_contribuintes_por_curso(LISTA2* lista2) {
+    if (lista2 == NULL) {
+        cout << "Erro: A lista está vazia, ou não foi inicializada corretamente." << endl;
+        return;
+    }
+    
+    ofstream arquivo_DSM("contribuintes_DSM.txt");
+    ofstream arquivo_SI("contribuintes_SI.txt");
+    ofstream arquivo_GE("contribuintes_GE.txt");
+    
+    if (!arquivo_DSM || !arquivo_SI || !arquivo_GE) {
+        cerr << "Erro ao abrir um dos arquivos de contribuintes." << endl;
+        return;
+    }
+    
+    NODE* aux = lista2->inicio;
+    while (aux != NULL) {
+        ofstream* arquivo;
+        if (aux->pagamento.curso == "DSM" || aux->pagamento.curso == "dsm") {
+            arquivo = &arquivo_DSM;
+        } else if (aux->pagamento.curso == "SI" || aux->pagamento.curso == "si") {
+            arquivo = &arquivo_SI;
+        } else if (aux->pagamento.curso == "GE" || aux->pagamento.curso == "ge") {
+            arquivo = &arquivo_GE;
+        } else {
+            cerr << "Curso desconhecido para o contribuinte com ID " << aux->pagamento.id_membro << endl;
+            aux = aux->next;
+            continue;
+        }
+        
+        *arquivo << aux->pagamento.id_membro << " "
+                 << aux->pagamento.nome << " "
+                 << aux->pagamento.curso << " "
+                 << aux->pagamento.mes << " "
+                 << aux->pagamento.ano << " "
+                 << aux->pagamento.valor << endl;
+        
+        aux = aux->next;
+    }
+    
+    arquivo_DSM.close();
+    arquivo_SI.close();
+    arquivo_GE.close();
 }
