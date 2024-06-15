@@ -33,7 +33,7 @@ typedef struct pagamento{
     string curso;
     int mes;
     int ano;
-    float valor;
+    double valor;
 }PAGAMENTO;
 
 struct NODE{
@@ -69,6 +69,7 @@ void limpar_lista1(LISTA* lista1);
 void limpar_lista2(LISTA2* lista2);
 void salvar_contribuintes(LISTA2* lista2);
 void ler_contribuintes(const string& nome_arquivo, LISTA2* lista2);
+void exibir_contribuintes(LISTA2* lista2);
 
 int main(){
     SetConsoleOutputCP(CP_UTF8);
@@ -97,7 +98,6 @@ int main(){
             MEMBRO novo_cadastro = cadastrar_membro();
             registrar_membro(&lista_registros, &novo_cadastro);
             cout << "Cadastro realizado com sucesso!" << endl;
-            limpar_lista2(&lista_contribuintes);
             break;
         }
 
@@ -120,6 +120,12 @@ int main(){
             registrar_pagamento(&lista_contribuintes, &novo_cadastro);
             break;
         }
+        
+        case 5:
+            // EXIBINDO CONTRIBUINTES
+            exibir_contribuintes(&lista_contribuintes);
+            break;
+
 
         // case 5:{
         //     // LÊ ARQUIVO EXTERNO E ALIMENTA EXTRUTURA DO SISTEMA
@@ -135,7 +141,7 @@ int main(){
         //     cout << "Cadastros salvos com sucesso no documento participantes.txt" << endl;
         //     break;
 
-        case 5:
+        case 6:
             // AO FECHAR O SISTEMA, ELE AUTOMATICAMENTE SALVA TODOS OS DADOS EM UM ARQUIVO TXT
             salvar_cadastros(&lista_registros);
             salvar_contribuintes(&lista_contribuintes);
@@ -149,7 +155,7 @@ int main(){
         cout << "Por favor insira um numero válido" << endl;
             break;
         }
-    }while(opcao != 5);
+    }while(opcao != 6);
     
     return 0;
 }
@@ -165,9 +171,10 @@ int menu()
     cout << "2 - Exibir membros\n";
     cout << "3 - Editar membros\n";
     cout << "4 - Registrar pagamento\n";
+    cout << "5 - Exibir contribuintes\n";
     // cout << "5 - Ler arquivo externo\n";
     // cout << "6 - Gravar em arquivo externo\n";
-    cout << "5 - Sair\n";
+    cout << "6 - Sair\n";
     
     // (cin >> opção) TENTA LER A ENTRADA E ARMAZENA NA VARIÁVEL OPCAO
     while(!(cin >> opcao) ) // VERIFICA ESTADO DE FALHA DO CIN
@@ -296,6 +303,42 @@ void exibir_membros(LISTA* lista)
     }
     return;
 }
+
+
+// FUNÇÃO PARA EXIBIR CONTRIBUINTES
+void exibir_contribuintes(LISTA2* lista2)
+{
+    if (lista2 == NULL) {
+        cout << "Erro: A lista de contribuintes está vazia, ou não foi inicializada corretamente." << endl;
+        return;
+    }
+
+    NODE* aux;
+    aux = lista2->inicio;
+    if(lista2->inicio != NULL){
+        cout << "============================\n";
+        cout << "Lista de contribuintes\n";
+        cout << "============================\n";
+       
+        // EXIBE OS MEMBROS ATÉ CHEGAR NO ULTIMO REGISTRO
+        while(aux != NULL)
+        {
+            cout << "-----------------------\n";
+            cout << "ID: " << aux->pagamento.id_membro << endl;
+            cout << "MES: " << aux->pagamento.mes << endl;
+            cout << "ANO: " << aux->pagamento.ano << endl;
+            cout << "VALOR: " << aux->pagamento.valor << endl;
+            cout << "-----------------------\n";
+            aux = aux->next;
+            
+        }
+    }
+    else{
+        cout << "Lista de membros vazia..." << endl;
+    }
+    return;
+}
+
 
 
 // FUNÇÃO PARA EDITAR AS INFORMAÇÕES DO MEMBRO
